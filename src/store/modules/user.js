@@ -20,10 +20,12 @@ const mutations = {
 const actions = {
   async login (context, data) {
     const result = await login(data)
-    // 判断发起的请求是否成功，
-    if (result.data.success) {
-      context.commit('setToken', result.data.data)
-    }
+    // // 判断发起的请求是否成功，
+    // if (result.data.success) {
+    //   context.commit('setToken', result.data.data)
+    // }
+    // 我们已经在请求拦截器里解构了服务器返回的数据 并且进行了判断，所以我们这里就不用判断了
+    context.commit('setToken', result)
   }
 }
 

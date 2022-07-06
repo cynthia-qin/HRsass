@@ -70,7 +70,7 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
-
+import { mapActions } from 'vuex'
 export default {
   name: 'Login',
   data () {
@@ -105,6 +105,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['user/login']),
     showPwd () {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -116,18 +117,25 @@ export default {
       })
     },
     handleLogin () {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+      // 在组件上使用ref可以获取到组件的实例对象也就是this
+      // 所以我们通过$refs.名 可以获取到当前组件的一些方法
+      // validate() 参数为一个回调函数 ，这个回调函数有两个参数，分别表示是否校验成功和未通过校验的字段
+      this.$refs.loginForm.validate(async isOK => {
+        if (isOK) {
+          // 校验成功，发起请求
+          try {
+            // 校验通过就显示登录加载状态
+            this.loading = true
+            // this['user/login'] 是一个async函数 异步函数 返回一个promise对象
+            // 此处加await 是为了强制等待 必须等到登录请求发起成功之后再进行跳转
+            await this['user/login'](this.loginForm)
+            this.$router.push('/')
+          } catch (err) {
+            console.log(err)
+          } finally {
+            // 不论是成功还是失败，都会进这个函数
             this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+          }
         }
       })
     }
