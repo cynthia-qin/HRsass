@@ -35,6 +35,13 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    // 配置反向代理 解决开发时期的跨域问题
+    proxy: {
+      '/api': {
+        target: 'http://ihrm.itheima.net/', // 跨域请求的地址 会自动在地址后面拼接/api 如果我们不需要可以通过pathRewrite路径重写去掉/api
+        changeOrigin: true // 当这个值为true时表示开启跨域
+      }
     }
     // before: require('./mock/mock-server.js')
   },
@@ -48,7 +55,7 @@ module.exports = {
       }
     }
   },
-  chainWebpack(config) {
+  chainWebpack (config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
       {
