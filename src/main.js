@@ -15,6 +15,12 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control  判断页面跳转有无token
 
+// 导出所有的自定义指令并全局注册
+import * as directives from '@/directives'
+// console.log(directives)
+Object.keys(directives).forEach(key =>
+  Vue.directive(key, directives[key])
+)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
