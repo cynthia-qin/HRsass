@@ -29,6 +29,7 @@ module.exports = {
     "vue/html-closing-bracket-newline": "off",
     "vue/html-indent": "off",
     "vue/html-self-closing": "off",
+    "vue/max-attributes-per-line": "off",
     'accessor-pairs': 2,
     'arrow-spacing': [2, {
       'before': true,
