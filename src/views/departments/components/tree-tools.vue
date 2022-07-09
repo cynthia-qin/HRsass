@@ -62,7 +62,7 @@ export default {
       if (command === 'add') {
         this.$emit('add-depts', this.treeNode)
       } else if (command === 'edit') {
-        console.log(command)
+        this.$emit('editDepts', this.treeNode)
       } else {
         this.$confirm('是否确定删除部门?', '提示', {
           confirmButtonText: '确定',

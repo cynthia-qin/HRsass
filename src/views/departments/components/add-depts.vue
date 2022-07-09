@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增部门" :visible="showDialog" @close="onCancel">
+  <el-dialog :title="showTitle" :visible="showDialog" @close="onCancel">
     <el-form
       ref="loginForm"
       label-width="120px"
@@ -61,7 +61,7 @@
 
 <script>
 import { getEmployeesSimple } from '@/api/employees'
-import { getDepartments, addDepartments } from '@/api/departments'
+import { getDepartments, addDepartments, getDepartDetails, editDepartById } from '@/api/departments'
 export default {
   filters: {},
   components: {},
@@ -81,18 +81,33 @@ export default {
     const checkNameRepate = async (rule, value, callback) => {
       // 先获取所有的数据
       const { depts } = await getDepartments()
-      // 先获取到当前添加部门的子部门数据
-      const children = depts.filter(item => item.pid === this.treeNode.id)
-      // 判断子部门数据中是否有和名字和value相等的部门
-      const isRepate = children.some(item => item.name === value)
+
+      let isRepate = null
+      // 判断form表单数据里有没有id，如果有就代表编辑操作
+      if (this.formData.id) {
+        // 获取当前部门的所有同级部门，排除自身的数据
+        isRepate = depts.filter(item => item.pid === this.treeNode.pid && item.id !== this.treeNode.id).some(item => item.name === value)
+      } else {
+        // 先获取到当前添加部门的子部门数据
+        const children = depts.filter(item => item.pid === this.treeNode.id)
+        // 判断子部门数据中是否有和名字和value相等的部门
+        isRepate = children.some(item => item.name === value)
+      }
       return isRepate ? callback(new Error(`当前部门下已经有${value}这个部门了`)) : callback()
     }
+
     // 校验部门编码在所有部门中是否重复
     const checkCodeRepate = async (rule, value, callback) => {
       // 先获取所有的数据
       const { depts } = await getDepartments()
-      // 判断获取到的数据里有没有和当前value相等的code 并且value不为空
-      const isRepate = depts.some(item => item.code === value && value)
+      let isRepate = null
+      if (this.formData.id) {
+        // 先获取除自己之外的数据，再判断里面有没有code和当前value相等的
+        isRepate = depts.filter(item => item.id !== this.treeNode.id).some(item => item.code === value)
+      } else {
+        // 判断获取到的数据里有没有和当前value相等的code 并且value不为空
+        isRepate = depts.some(item => item.code === value && value)
+      }
       return isRepate ? callback(new Error(`当前部门编码${value}已经存在了`)) : callback()
     }
     return {
@@ -124,7 +139,11 @@ export default {
       peoples: []
     }
   },
-  computed: {},
+  computed: {
+    showTitle () {
+      return this.formData.id ? '编辑部门' : '新增部门'
+    }
+  },
   watch: {},
   created () { },
   methods: {
@@ -134,10 +153,14 @@ export default {
     onConfirm () {
       this.$refs.loginForm.validate(async isOk => {
         if (isOk) {
-          await addDepartments({
-            ...this.formData,
-            pid: this.treeNode.id
-          })
+          if (this.formData.id) {
+            await editDepartById(this.formData)
+          } else {
+            await addDepartments({
+              ...this.formData,
+              pid: this.treeNode.id
+            })
+          }
           // 让父页面重新拉去数据
           this.$emit('addDepts')
           // 关闭弹出层 并且会自动调用dialog的close事件，
@@ -146,10 +169,20 @@ export default {
       })
     },
     onCancel () {
+      // 重置数据  因为resetFields 只能重置 表单上的数据 非表单上的 比如 编辑中id 不能重置
+      this.formData = {
+        name: '',
+        code: '',
+        manager: '',
+        introduce: ''
+      }
       // 关闭弹层
       this.$emit('update:showDialog', false)
       // 移除校验 并且清空表单数据
       this.$refs.loginForm.resetFields()
+    },
+    async getDepartDetails (id) {
+      this.formData = await getDepartDetails(id)
     }
   }
 }

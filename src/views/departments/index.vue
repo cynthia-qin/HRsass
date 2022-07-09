@@ -16,11 +16,13 @@
             :tree-node="data"
             @delDep="getDepartments"
             @add-depts="addDepts"
+            @editDepts="editDepts"
           />
         </el-tree>
       </el-card>
     </div>
     <addDepts
+      ref="editDialog"
       :show-dialog.sync="showDialog"
       :tree-node="node"
       @addDepts="getDepartments"
@@ -47,7 +49,7 @@ export default {
       // 这里添加id的作用时为了后面添加子部门时，通过""字符串判断，是否有部门重复
       company: { name: 'xxxx有限公司', manager: '负责人', id: '' },
       showDialog: false,
-      node: null
+      node: null // 用于接收点击新增或编辑部门时被点击部门的数据
     }
   },
   created () {
@@ -68,6 +70,12 @@ export default {
     addDepts (node) {
       this.showDialog = true
       this.node = node
+    },
+    editDepts (node) {
+      this.showDialog = true
+      this.node = node
+      // 因为props传值是异步的，如果我们在子组件内部使用父组件传过去的node的id值可能会出现获取不到的情况，因此我们通过ref在父组件内调用子组件的函数
+      this.$refs.editDialog.getDepartDetails(node.id)
     }
   }
 }
