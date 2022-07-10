@@ -15,12 +15,19 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control  判断页面跳转有无token
 
+// 导入注册全局组件
+import components from './components'
+Vue.use(components)
+
 // 导出所有的自定义指令并全局注册
 import * as directives from '@/directives'
 // console.log(directives)
 Object.keys(directives).forEach(key =>
   Vue.directive(key, directives[key])
 )
+// 导入所有的过滤器并全局注册
+import * as filters from '@/filters'
+Object.keys(filters).forEach(key => Vue.filter(key, filters[key]))
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
