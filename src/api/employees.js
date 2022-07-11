@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 /**
- *获取员工共简单列表
+ *获取员工简单列表
  * @returns
  */
 export const getEmployeesSimple = () => {
@@ -51,6 +51,58 @@ export const importEmployees = (data) => {
   return request({
     url: '/sys/user/batch',
     method: 'POST',
+    data
+  })
+}
+/**
+ * 保存用户基本信息
+ * @param {用户信息} data
+ * @returns
+ */
+export const saveUserDetails = (data) => {
+  return request({
+    url: `/sys/user/${data.id}`,
+    method: 'PUT',
+    data
+  })
+}
+/** *
+ *  读取用户详情的基础信息
+ * **/
+export function getPersonalDetail (id) {
+  return request({
+    url: `/employees/${id}/personalInfo`
+  })
+}
+
+/** *
+ *  更新用户详情的基础信息
+ * **/
+export function updatePersonal (data) {
+  return request({
+    url: `/employees/${data.userId}/personalInfo`,
+    method: 'put',
+    data
+  })
+}
+
+/** **
+ * 获取用户的岗位信息
+ *
+ * ****/
+export function getJobDetail (id) {
+  return request({
+    url: `/employees/${id}/jobs`
+  })
+}
+
+/**
+ * 保存岗位信息
+ * ****/
+export function updateJob (data) {
+  return request({
+    url: `/employees/${data.userId}/jobs`,
+    method: 'put',
     data
   })
 }
