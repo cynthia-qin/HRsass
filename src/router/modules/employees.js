@@ -7,6 +7,7 @@ export default {
   children: [{
     path: '',
     component: () => import('@/views/employees'),
+    name: 'employees',
     meta: {
       title: '员工管理',
       icon: 'people'
@@ -19,6 +20,14 @@ export default {
     meta: {
       title: '员工详情'
       // icon: 'people'
+    }
+  },
+  {
+    path: 'print/:id', // 如果没有id也想跳转到print页面就写:id?
+    component: () => import('@/views/employees/print.vue'),
+    hidden: true,
+    meta: {
+      title: '员工打印'
     }
   }]
 }

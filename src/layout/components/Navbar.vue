@@ -12,6 +12,12 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu">
+      <!-- 放置语言选择组件 -->
+      <LangSelect class="right-menu-item" />
+      <!-- 放置全屏组件 -->
+      <ScreenFull class="right-menu-item" />
+      <!-- 放置基础换肤组件 -->
+      <ThemePicker class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imagerror="defaultImg" :src="staffPhoto" class="user-avatar" />
@@ -35,6 +41,7 @@
 </template>
 
 <script>
+
 import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -63,7 +70,7 @@ export default {
     },
     async logout () {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login`)
+      this.$router.push('/login')
     }
   }
 }
@@ -172,6 +179,9 @@ export default {
           color: #fff;
         }
       }
+    }
+    .right-menu-item {
+      vertical-align: middle;
     }
   }
 }

@@ -69,7 +69,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: 'dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
@@ -84,9 +84,9 @@ export const constantRoutes = [
         component: () => import('@/views/import')
       }
     ]
-  },
+  }
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+
 ]
 
 const createRouter = () => new Router({
@@ -94,12 +94,14 @@ const createRouter = () => new Router({
   scrollBehavior: () => ({ y: 0 }),
   // routes: constantRoutes
   // 临时合并静态路由和动态路由
-  routes: [...constantRoutes, ...asyncRoutes]
+  // routes: [...constantRoutes, ...asyncRoutes]
+  routes: [...constantRoutes]
 })
 
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+// 重置路由
 export function resetRouter () {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router

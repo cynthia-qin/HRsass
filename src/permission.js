@@ -15,10 +15,18 @@ router.beforeEach(async (to, from, next) => {
       next('/')
     } else {
       if (!store.getters.userId) {
-        // 如果用户ID没有，那就要请求用户资料
-        await store.dispatch('user/getUserInfo')
+        // 如果用户ID没有，那就要请求用户资料  请求资料的时候接收返回值
+        const { roles } = await store.dispatch('user/getUserInfo')
+        // 得到roles就可以获取到当前用户已有的权限，
+        const routes = await store.dispatch('permission/filterRoutes', roles.menus)
+        // 将得到的路由表添加进当前用户的路由
+        // 这样添加路由能保证404的路由放在最后
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }])
+        // 这里必须要这么写 是个已知缺陷
+        next(to.path)
+      } else {
+        next()
       }
-      next()
     }
   } else {
     //  没有token 判断要去的页面是否在白名单内，在就直接放行 ，不在就跳转去登录页面

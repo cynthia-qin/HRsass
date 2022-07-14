@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken, setTimeStamp } from '@/utils/auth'
 import { login, getUserInfo, getUserInfoById } from '@/api/user'
+import { resetRouter } from '@/router'
 const state = {
   // 设置token初始化状态
   token: getToken(),
@@ -56,6 +57,11 @@ const actions = {
     context.commit('removeToken')
     // 清空用户信息
     context.commit('removeUserInfo')
+    // 重置路由 将路由对象重置成一个新的路由对象 只有基本的几个静态路由
+    resetRouter()
+    // 将Vuex里的routes数据清空
+    // vuex 子模块调用另一个子模块里的mutations或者actions 必须加入第三哥参数{root:true} 表示可以调用父级里的方法
+    context.commit('permission/setRoutes', [], { root: true })
   }
 }
 

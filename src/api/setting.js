@@ -37,7 +37,7 @@ export const delRoleList = (id) => {
 
 /**
  * 根据ID获取角色详情
- * @param {当前删除的数据的id} id
+ * @param {} id
  * @returns
  */
 export const getRoleDetails = (id) => {
@@ -59,11 +59,23 @@ export const updateRole = (data) => {
   })
 }
 
+// 新增角色
 export const addRole = (data) => {
   return request({
     url: '/sys/role',
     method: 'POST',
     data
+  })
+}
+// 给角色分配权限
+export const assignPerm = ({ id, permIds }) => {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'PUT',
+    data: {
+      id,
+      permIds
+    }
   })
 }
 
